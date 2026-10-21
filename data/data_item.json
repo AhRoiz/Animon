@@ -1,0 +1,25 @@
+{
+  "versi": "1.0",
+  "keterangan": "Katalog item ANIMON. jenis: HEAL | BUFF | EVOLUSI. hargaJual otomatis = 50% hargaBeli. BUFF.stat: ATTACK/DEFENSE/SPEED/EVASION/CRIT. delayTurn > 0 = buff masuk antrian dan baru aktif di turn berikutnya.",
+  "items": [
+    { "id": "I01", "jenis": "HEAL", "nama": "Ramuan Kecil",  "hargaBeli": 40,  "hp": 50,  "mana": 0,  "deskripsi": "Ramuan herbal sederhana." },
+    { "id": "I02", "jenis": "HEAL", "nama": "Ramuan Besar",  "hargaBeli": 90,  "hp": 120, "mana": 0,  "deskripsi": "Ramuan pekat untuk luka berat." },
+    { "id": "I03", "jenis": "HEAL", "nama": "Eter Mana",     "hargaBeli": 60,  "hp": 0,   "mana": 40, "deskripsi": "Cairan biru berkilau pemulih mana." },
+    { "id": "I04", "jenis": "HEAL", "nama": "Elixir Agung",  "hargaBeli": 180, "hp": 999, "mana": 999, "deskripsi": "Memulihkan HP dan MP sepenuhnya." },
+    { "id": "I05", "jenis": "HEAL", "nama": "Bulu Phoenix",  "hargaBeli": 200, "revive": true, "revivePersen": 50, "deskripsi": "Membangkitkan hewan yang pingsan." },
+
+    { "id": "I06", "jenis": "BUFF", "nama": "Jamu Kuat",     "hargaBeli": 70, "stat": "ATTACK",  "nilai": 30, "durasi": 2, "delayTurn": 1, "deskripsi": "Jamu tradisional; khasiatnya baru terasa giliran berikutnya." },
+    { "id": "I07", "jenis": "BUFF", "nama": "Tameng Rotan",  "hargaBeli": 60, "stat": "DEFENSE", "nilai": 40, "durasi": 2, "delayTurn": 0, "deskripsi": "Tameng anyaman rotan, langsung terpasang." },
+    { "id": "I08", "jenis": "BUFF", "nama": "Sepatu Angin",  "hargaBeli": 65, "stat": "EVASION", "nilai": 15, "durasi": 2, "delayTurn": 0, "deskripsi": "Membuat gerakan seringan angin." },
+    { "id": "I09", "jenis": "BUFF", "nama": "Kristal Fokus", "hargaBeli": 80, "stat": "CRIT",    "nilai": 30, "durasi": 2, "delayTurn": 1, "deskripsi": "Kristal yang mempertajam insting; butuh 1 turn untuk beresonansi." },
+    { "id": "I10", "jenis": "BUFF", "nama": "Kopi Tubruk",   "hargaBeli": 55, "stat": "SPEED",   "nilai": 40, "durasi": 3, "delayTurn": 0, "deskripsi": "Kafein murni. Lebih cepat, lebih sulit dikenai." },
+
+    { "id": "I11", "jenis": "EVOLUSI", "nama": "Batu Bara",     "hargaBeli": 120, "elemen": "API",   "bonusAtk": 3,  "deskripsi": "Mengubah elemen hewan menjadi Api." },
+    { "id": "I12", "jenis": "EVOLUSI", "nama": "Mutiara Laut",  "hargaBeli": 120, "elemen": "AIR",   "bonusMaxHp": 10, "deskripsi": "Mengubah elemen hewan menjadi Air." },
+    { "id": "I13", "jenis": "EVOLUSI", "nama": "Batu Bumi",     "hargaBeli": 120, "elemen": "EARTH", "bonusDef": 4, "deskripsi": "Mengubah elemen hewan menjadi Earth." },
+    { "id": "I14", "jenis": "EVOLUSI", "nama": "Kristal Es",    "hargaBeli": 120, "elemen": "ICE",   "bonusSpeed": 4, "deskripsi": "Mengubah elemen hewan menjadi Ice." },
+    { "id": "I15", "jenis": "EVOLUSI", "nama": "Inti Mekanik",  "hargaBeli": 150, "tipe": "ROBOT",   "bonusMaxHp": 20, "bonusDef": 8, "deskripsi": "Memasang inti robot: tipe berubah menjadi Robot." },
+    { "id": "I16", "jenis": "EVOLUSI", "nama": "Permen Langka", "hargaBeli": 140, "naikLevel": 1, "bonusMaxHp": 20, "bonusAtk": 4, "bonusDef": 4, "deskripsi": "Naik 1 level dan menaikkan max stats." },
+    { "id": "I17", "jenis": "EVOLUSI", "nama": "Sisik Naga",    "hargaBeli": 220, "tipe": "NAGA",    "bonusMaxHp": 15, "bonusAtk": 6, "deskripsi": "Membangkitkan darah naga: tipe berubah menjadi Naga." }
+  ]
+}

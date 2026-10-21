@@ -1,0 +1,240 @@
+{
+  "versi": "1.0",
+  "keterangan": "Database hewan ANIMON. Role: DPS/SUPPORT/TANK. Tipe: DARAT/TERBANG/AIR/NAGA/ROBOT. Elemen: API/AIR/EARTH/ICE/NORMAL. Mode skill: DPS=BURST|PIERCE, SUPPORT=LIFESTEAL|HEAL, TANK=SHIELD|TAUNT.",
+  "hewan": [
+    {
+      "id": "H01",
+      "nama": "Gajah Batu",
+      "role": "TANK",
+      "tipe": "DARAT",
+      "elemen": "EARTH",
+      "level": 5,
+      "stat": { "maxHp": 260, "maxMana": 60, "attack": 26, "defense": 46, "speed": 15, "evasion": 0 },
+      "skill": {
+        "nama": "Benteng Gading",
+        "mode": "SHIELD",
+        "manaCost": 25,
+        "power": 0.0,
+        "nilai": 25,
+        "deskripsi": "Membangun benteng gading yang menyerap damage."
+      },
+      "deskripsi": "Raksasa darat ber-HP sangat tebal. Lambat dan rawan terhadap elemen Ice."
+    },
+    {
+      "id": "H02",
+      "nama": "Banteng Gunung",
+      "role": "DPS",
+      "tipe": "DARAT",
+      "elemen": "EARTH",
+      "level": 5,
+      "stat": { "maxHp": 165, "maxMana": 50, "attack": 47, "defense": 26, "speed": 40, "evasion": 3 },
+      "skill": {
+        "nama": "Seruduk Longsor",
+        "mode": "BURST",
+        "manaCost": 20,
+        "power": 1.7,
+        "nilai": 15,
+        "deskripsi": "Serudukan sekuat tanah longsor."
+      },
+      "deskripsi": "Petarung darat seimbang dengan serangan berat. Kesulitan mengenai hewan terbang."
+    },
+    {
+      "id": "H03",
+      "nama": "Harimau Salju",
+      "role": "DPS",
+      "tipe": "DARAT",
+      "elemen": "ICE",
+      "level": 5,
+      "stat": { "maxHp": 140, "maxMana": 55, "attack": 50, "defense": 20, "speed": 62, "evasion": 8 },
+      "skill": {
+        "nama": "Cakar Beku",
+        "mode": "PIERCE",
+        "manaCost": 22,
+        "power": 1.6,
+        "nilai": 40,
+        "deskripsi": "Cakar es yang menembus pertahanan."
+      },
+      "deskripsi": "Pemburu cepat dari pegunungan bersalju. Mimpi buruk bagi Tank elemen Earth."
+    },
+    {
+      "id": "H04",
+      "nama": "Elang Badai",
+      "role": "DPS",
+      "tipe": "TERBANG",
+      "elemen": "NORMAL",
+      "level": 5,
+      "stat": { "maxHp": 95, "maxMana": 50, "attack": 48, "defense": 14, "speed": 95, "evasion": 20 },
+      "skill": {
+        "nama": "Tukikan Maut",
+        "mode": "BURST",
+        "manaCost": 20,
+        "power": 1.6,
+        "nilai": 25,
+        "deskripsi": "Menukik dari langit dengan kecepatan penuh."
+      },
+      "deskripsi": "Tercepat di langit, evasion tinggi, tapi HP dan DEF sangat tipis."
+    },
+    {
+      "id": "H05",
+      "nama": "Rajawali Bara",
+      "role": "SUPPORT",
+      "tipe": "TERBANG",
+      "elemen": "API",
+      "level": 5,
+      "stat": { "maxHp": 105, "maxMana": 70, "attack": 36, "defense": 16, "speed": 80, "evasion": 15 },
+      "skill": {
+        "nama": "Sayap Bara",
+        "mode": "LIFESTEAL",
+        "manaCost": 18,
+        "power": 1.3,
+        "nilai": 60,
+        "deskripsi": "Sayap membara yang membakar musuh dan menyerap nyawanya."
+      },
+      "deskripsi": "Burung api lincah yang bertahan hidup dengan menyerap HP lawan."
+    },
+    {
+      "id": "H06",
+      "nama": "Burung Hantu Kristal",
+      "role": "SUPPORT",
+      "tipe": "TERBANG",
+      "elemen": "ICE",
+      "level": 5,
+      "stat": { "maxHp": 100, "maxMana": 80, "attack": 30, "defense": 18, "speed": 70, "evasion": 15 },
+      "skill": {
+        "nama": "Nyanyian Embun",
+        "mode": "HEAL",
+        "manaCost": 25,
+        "power": 0.0,
+        "nilai": 35,
+        "deskripsi": "Nyanyian lembut yang memulihkan kawan dan menghapus debuff."
+      },
+      "deskripsi": "Penyembuh malam hari. Rapuh, tapi menjaga tim tetap hidup."
+    },
+    {
+      "id": "H07",
+      "nama": "Kelelawar Vampir",
+      "role": "SUPPORT",
+      "tipe": "TERBANG",
+      "elemen": "NORMAL",
+      "level": 5,
+      "stat": { "maxHp": 90, "maxMana": 60, "attack": 38, "defense": 14, "speed": 88, "evasion": 20 },
+      "skill": {
+        "nama": "Hisap Darah",
+        "mode": "LIFESTEAL",
+        "manaCost": 15,
+        "power": 1.2,
+        "nilai": 80,
+        "deskripsi": "Gigitan yang menyedot darah lawan."
+      },
+      "deskripsi": "Penghisap darah yang sulit dipukul. Lifesteal tertinggi di antara Support."
+    },
+    {
+      "id": "H08",
+      "nama": "Hiu Martil",
+      "role": "DPS",
+      "tipe": "AIR",
+      "elemen": "AIR",
+      "level": 5,
+      "stat": { "maxHp": 150, "maxMana": 55, "attack": 49, "defense": 24, "speed": 58, "evasion": 6 },
+      "skill": {
+        "nama": "Gigitan Pusaran",
+        "mode": "PIERCE",
+        "manaCost": 22,
+        "power": 1.65,
+        "nilai": 35,
+        "deskripsi": "Gigitan berputar seperti pusaran air."
+      },
+      "deskripsi": "Predator lautan. Serangan airnya membuat hewan darat terjebak lumpur."
+    },
+    {
+      "id": "H09",
+      "nama": "Penyu Karang",
+      "role": "TANK",
+      "tipe": "AIR",
+      "elemen": "EARTH",
+      "level": 5,
+      "stat": { "maxHp": 240, "maxMana": 60, "attack": 28, "defense": 44, "speed": 18, "evasion": 2 },
+      "skill": {
+        "nama": "Hantaman Cangkang",
+        "mode": "TAUNT",
+        "manaCost": 20,
+        "power": 0.9,
+        "nilai": 1,
+        "deskripsi": "Hantaman cangkang yang memancing amarah lawan."
+      },
+      "deskripsi": "Benteng hidup bercangkang karang. Memprovokasi lawan agar tak bisa memakai skill."
+    },
+    {
+      "id": "H10",
+      "nama": "Lumba-lumba Pelangi",
+      "role": "SUPPORT",
+      "tipe": "AIR",
+      "elemen": "AIR",
+      "level": 5,
+      "stat": { "maxHp": 130, "maxMana": 85, "attack": 30, "defense": 22, "speed": 66, "evasion": 12 },
+      "skill": {
+        "nama": "Gelombang Penyembuh",
+        "mode": "HEAL",
+        "manaCost": 25,
+        "power": 0.0,
+        "nilai": 40,
+        "deskripsi": "Gelombang air hangat yang menyembuhkan."
+      },
+      "deskripsi": "Healer paling tangguh dengan mana terbesar."
+    },
+    {
+      "id": "H11",
+      "nama": "Naga Gletser",
+      "role": "TANK",
+      "tipe": "NAGA",
+      "elemen": "ICE",
+      "level": 6,
+      "stat": { "maxHp": 250, "maxMana": 70, "attack": 36, "defense": 40, "speed": 30, "evasion": 4 },
+      "skill": {
+        "nama": "Zirah Kristal Abadi",
+        "mode": "SHIELD",
+        "manaCost": 30,
+        "power": 0.0,
+        "nilai": 30,
+        "deskripsi": "Menyelimuti tubuh dengan kristal es abadi."
+      },
+      "deskripsi": "Naga purba dari gletser. Sisiknya menahan serangan, tapi lemah terhadap Api."
+    },
+    {
+      "id": "H12",
+      "nama": "Naga Merapi",
+      "role": "DPS",
+      "tipe": "NAGA",
+      "elemen": "API",
+      "level": 6,
+      "stat": { "maxHp": 170, "maxMana": 60, "attack": 54, "defense": 28, "speed": 45, "evasion": 5 },
+      "skill": {
+        "nama": "Napas Magma",
+        "mode": "BURST",
+        "manaCost": 35,
+        "power": 2.0,
+        "nilai": 10,
+        "deskripsi": "Semburan magma dari perut gunung berapi."
+      },
+      "deskripsi": "Damage terbesar di game, tapi skill-nya sangat boros mana."
+    },
+    {
+      "id": "H13",
+      "nama": "Kumbang Mekanik",
+      "role": "TANK",
+      "tipe": "ROBOT",
+      "elemen": "NORMAL",
+      "level": 5,
+      "stat": { "maxHp": 220, "maxMana": 50, "attack": 30, "defense": 52, "speed": 25, "evasion": 3 },
+      "skill": {
+        "nama": "Provokasi Sirene",
+        "mode": "TAUNT",
+        "manaCost": 18,
+        "power": 0.8,
+        "nilai": 1,
+        "deskripsi": "Sirene memekakkan telinga yang memprovokasi lawan."
+      },
+      "deskripsi": "Serangga robot berlapis baja. Kebal serangan fisik darat, tapi korslet terkena air."
+    }
+  ]
+}

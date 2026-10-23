@@ -1,5 +1,7 @@
 package animon.battle;
 
+import animon.model.Hewan;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +15,7 @@ public final class HasilAksi {
 
     private final List<String> log = new ArrayList<>();
     private final List<EfekTertunda> tertunda = new ArrayList<>();
+    private final List<Hewan> korban = new ArrayList<>();
     private boolean oneMore;
     private boolean berhasil = true;
     private String alasanGagal;
@@ -49,9 +52,19 @@ public final class HasilAksi {
         return this;
     }
 
+    public HasilAksi logSemua(List<String> baris) {
+        log.addAll(baris);
+        return this;
+    }
+
     public HasilAksi tunda(EfekTertunda efek) {
         tertunda.add(efek);
         return this;
+    }
+
+    /** Dicatat oleh {@link BattleEngine} saat hewan lawan pingsan akibat aksi ini (Kill Reward). */
+    void tambahKorban(Hewan hewan) {
+        korban.add(hewan);
     }
 
     public boolean isBerhasil()          { return berhasil; }
@@ -59,4 +72,5 @@ public final class HasilAksi {
     public boolean isOneMore()           { return oneMore; }
     public List<String> getLog()         { return Collections.unmodifiableList(log); }
     public List<EfekTertunda> getTertunda() { return Collections.unmodifiableList(tertunda); }
+    public List<Hewan> getKorban()       { return Collections.unmodifiableList(korban); }
 }

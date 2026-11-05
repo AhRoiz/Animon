@@ -12,13 +12,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 /**
- * {@link JProgressBar} bergaya bar HP/MP Game Boy (tersegmentasi, bingkai pixel).
- *
- * <p>{@link #setNilaiAnimasi(int, int)} menggerakkan bar secara halus dari nilai lama ke nilai baru
- * (dipanggil setelah {@code BattleEngine} selesai menghitung damage), sehingga perubahan HP
- * terlihat "turun perlahan" seperti di game aslinya. Bar HP berkedip saat sisa &lt; 25%.</p>
+ * Bar indikator HP/MP bersegmen piksel yang beranimasi halus mengikuti hasil hitungan {@code BattleEngine}.
+ * Bar HP berkedip singkat saat di bawah 25% untuk memberi sinyal kritis tanpa loop tanpa akhir.
  */
-public class PixelBar extends JProgressBar {
+public final class PixelBar extends JProgressBar {
 
     public enum Jenis { HP, MP }
 
@@ -26,6 +23,7 @@ public class PixelBar extends JProgressBar {
     private final Timer tween;
     private int target;
     private boolean kedipTampil = true;
+    private int hitungKedip;
     private final Timer kedip;
     private Runnable saatSelesai;
 
@@ -38,8 +36,14 @@ public class PixelBar extends JProgressBar {
         setStringPainted(false);
 
         tween = new Timer(16, e -> langkah());
-        kedip = new Timer(380, e -> {
-            kedipTampil = !kedipTampil;
+        kedip = new Timer(360, e -> {
+            hitungKedip++;
+            if (!Tema.isAnimasiAktif() || hitungKedip >= 6) {
+                kedipTampil = true;
+                ((Timer) e.getSource()).stop();
+            } else {
+                kedipTampil = !kedipTampil;
+            }
             repaint();
         });
     }
@@ -62,7 +66,8 @@ public class PixelBar extends JProgressBar {
         if (maks != getMaximum()) setMaximum(Math.max(1, maks));
         target = Math.max(0, Math.min(nilai, getMaximum()));
         saatSelesai = selesai;
-        if (getValue() == target) {
+        if (!Tema.isAnimasiAktif() || getValue() == target) {
+            setValue(target);
             perbaruiKedip();
             if (selesai != null) selesai.run();
             return;
@@ -91,8 +96,11 @@ public class PixelBar extends JProgressBar {
 
     private void perbaruiKedip() {
         boolean kritis = jenis == Jenis.HP && getValue() > 0 && getValue() * 4 < getMaximum();
-        if (kritis && !kedip.isRunning()) kedip.start();
-        if (!kritis) {
+        if (kritis && Tema.isAnimasiAktif() && !kedip.isRunning()) {
+            hitungKedip = 0;
+            kedip.start();
+        }
+        if (!kritis || !Tema.isAnimasiAktif()) {
             kedip.stop();
             kedipTampil = true;
         }

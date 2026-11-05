@@ -81,17 +81,40 @@ public final class UIKit {
     }
 
     public static JTextField textField(String isi) {
-        JTextField tf = new JTextField(isi);
-        tf.setFont(Tema.judul(14f));
+        JTextField tf = new JTextField(isi) {
+            @Override
+            public java.awt.Dimension getPreferredSize() {
+                java.awt.Dimension d = super.getPreferredSize();
+                return new java.awt.Dimension(Math.max(44, d.width), Math.max(44, d.height));
+            }
+        };
+        tf.setFont(Tema.judul(13f));
         tf.setForeground(Tema.GELAP);
         tf.setBackground(Tema.TERANG);
         tf.setCaretColor(Tema.GELAP);
         tf.setSelectionColor(Tema.GELAP);
         tf.setSelectedTextColor(Tema.TERANG);
-        tf.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 0, 4, 0, Tema.GELAP),
-                BorderFactory.createEmptyBorder(8, 6, 6, 6)));
-        tf.setOpaque(false);
+        javax.swing.border.Border normal = BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Tema.GELAP, 3),
+                BorderFactory.createEmptyBorder(8, 10, 8, 10));
+        javax.swing.border.Border fokus = BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Tema.GELAP, 4),
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(Tema.MUDA, 2),
+                        BorderFactory.createEmptyBorder(5, 7, 5, 7)));
+        tf.setBorder(normal);
+        tf.setOpaque(true);
+        tf.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                tf.setBorder(fokus);
+            }
+
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                tf.setBorder(normal);
+            }
+        });
         return tf;
     }
 
@@ -107,25 +130,27 @@ public final class UIKit {
         return sp;
     }
 
-    /** JList bergaya pixel dengan renderer dua baris (judul + keterangan). */
+    /** JList bergaya pixel dengan renderer dua baris dan kursor tangan saat aktif. */
     public static <T> JList<T> list(Function<T, String[]> isi) {
         JList<T> l = new JList<>();
         l.setBackground(Tema.TERANG);
         l.setForeground(Tema.GELAP);
         l.setSelectionBackground(Tema.GELAP);
         l.setSelectionForeground(Tema.TERANG);
+        l.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
         l.setCellRenderer(renderer(isi));
         return l;
     }
 
     public static <T> ListCellRenderer<T> renderer(Function<T, String[]> isi) {
         return (list, value, index, selected, focus) -> {
-            JPanel p = new JPanel(new BorderLayout(8, 0));
+            JPanel p = new JPanel(new BorderLayout(8, 2));
             Color bg = selected ? Tema.GELAP : (index % 2 == 0 ? Tema.TERANG : new Color(0x94b40f));
             Color fg = selected ? Tema.TERANG : Tema.GELAP;
             p.setBackground(bg);
             p.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createMatteBorder(0, 0, 2, 0, Tema.MUDA),
+                    focus ? BorderFactory.createLineBorder(selected ? Tema.MUDA : Tema.GELAP, 2)
+                          : BorderFactory.createMatteBorder(0, 0, 2, 0, Tema.MUDA),
                     BorderFactory.createEmptyBorder(6, 10, 6, 10)));
             String[] s = value == null ? new String[] {"-"} : isi.apply(value);
             JLabel atas = new JLabel(s[0]);
@@ -135,7 +160,7 @@ public final class UIKit {
             if (s.length > 1 && s[1] != null) {
                 JLabel bawah = new JLabel(s[1]);
                 bawah.setFont(Tema.teks(19f));
-                bawah.setForeground(selected ? Tema.MUDA : Tema.TUA);
+                bawah.setForeground(selected ? Tema.MUDA : Tema.GELAP);
                 p.add(bawah, BorderLayout.CENTER);
             }
             if (s.length > 2 && s[2] != null) {

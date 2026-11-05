@@ -18,17 +18,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * Tombol bergaya menu Game Boy.
- *
- * <ul>
- *   <li>Normal: latar terang, bingkai gelap.</li>
- *   <li>Hover / fokus keyboard: warna dibalik + kursor segitiga berkedip di kiri (seperti menu RPG).</li>
- *   <li>Ditekan: bergeser 2px (efek tombol fisik).</li>
- *   <li>Nonaktif: teks hijau tua dengan pola dither.</li>
- * </ul>
- * Mendukung sub-teks kecil di bawah judul (mis. "HP 120/260" atau "20 MP").
+ * Tombol bergaya menu Game Boy dengan bayangan piksel 4px dan kursor segitiga saat fokus atau hover.
+ * Menjamin tinggi dan lebar minimal 44px serta membatasi kedipan kursor maksimal 6 ketukan.
  */
-public class PixelButton extends JButton {
+public final class PixelButton extends JButton {
 
     public enum Gaya { TERANG, GELAP }
 
@@ -36,6 +29,7 @@ public class PixelButton extends JButton {
     private boolean hover;
     private boolean mouseDidalam;
     private boolean kursorTampil = true;
+    private int hitungKedip;
     private Gaya gaya = Gaya.TERANG;
     private float ukuranFont;
     private final Timer kedip;
@@ -60,9 +54,16 @@ public class PixelButton extends JButton {
         setRolloverEnabled(true);
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         setMargin(new Insets(10, 26, 10, 14));
+        getAccessibleContext().setAccessibleName(subTeks == null ? teks : teks + " (" + subTeks + ")");
 
         kedip = new Timer(420, e -> {
-            kursorTampil = !kursorTampil;
+            hitungKedip++;
+            if (!Tema.isAnimasiAktif() || hitungKedip >= 6) {
+                kursorTampil = true;
+                ((Timer) e.getSource()).stop();
+            } else {
+                kursorTampil = !kursorTampil;
+            }
             repaint();
         });
 
@@ -96,7 +97,8 @@ public class PixelButton extends JButton {
         if (hover == h) return;
         hover = h && isEnabled();
         kursorTampil = true;
-        if (hover) kedip.start();
+        hitungKedip = 0;
+        if (hover && Tema.isAnimasiAktif()) kedip.start();
         else kedip.stop();
         repaint();
     }
@@ -109,6 +111,7 @@ public class PixelButton extends JButton {
 
     public void setSubTeks(String s) {
         this.subTeks = s;
+        getAccessibleContext().setAccessibleName(s == null ? getText() : getText() + " (" + s + ")");
         revalidate();
         repaint();
     }
@@ -141,7 +144,7 @@ public class PixelButton extends JButton {
             w = Math.max(w, fs.stringWidth(subTeks) + m.left + m.right + 8);
             h += fs.getHeight() - 2;
         }
-        return new Dimension(w, h);
+        return new Dimension(Math.max(44, w), Math.max(44, h));
     }
 
     @Override
@@ -169,7 +172,7 @@ public class PixelButton extends JButton {
             tinta = Tema.TUA;
         }
 
-        // bayangan
+        // Bayangan tegas 4px memisahkan tombol interaktif dari panel statis.
         if (!tekan) {
             g.setColor(Tema.TUA);
             g.fillRect(4, 4, w - 4, h - 4);
@@ -178,7 +181,6 @@ public class PixelButton extends JButton {
         int y = geser;
         int bw = w - 4;
         int bh = h - 4;
-        // isi + bingkai (sudut terpotong 2px)
         g.setColor(Tema.GELAP);
         g.fillRect(x + 2, y, bw - 4, bh);
         g.fillRect(x, y + 2, bw, bh - 4);
@@ -186,7 +188,6 @@ public class PixelButton extends JButton {
         g.fillRect(x + 3, y + 3, bw - 6, bh - 6);
         if (!aktif) Tema.dither(g, x + 3, y + 3, bw - 6, bh - 6, Tema.TERANG, 4);
 
-        // teks
         Font fJudul = getFont();
         FontMetrics fm = g.getFontMetrics(fJudul);
         Font fSub = Tema.teks(ukuranFont + 6);
@@ -206,7 +207,6 @@ public class PixelButton extends JButton {
             g.drawString(subTeks, sx, ty + fs.getHeight() - 2);
         }
 
-        // kursor segitiga ala menu RPG
         if (balik && kursorTampil) {
             int cy = ty - fm.getAscent() / 2 - 1;
             int cx = tx - 16;

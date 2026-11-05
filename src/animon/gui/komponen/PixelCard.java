@@ -2,6 +2,9 @@ package animon.gui.komponen;
 
 import animon.gui.tema.Tema;
 
+import javax.accessibility.Accessible;
+import javax.accessibility.AccessibleContext;
+import javax.accessibility.AccessibleRole;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
@@ -21,11 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Kartu yang bisa diklik (dipakai untuk opsi item, kartu hewan saat draft tim, dan pilihan
- * hewan pembuka). Menampilkan sprite opsional, judul, beberapa baris teks, dan badge pojok
- * kanan atas. Mendukung hover (warna dibalik), terpilih, dan nonaktif dengan "stempel".
+ * Kartu opsi interaktif dengan label rarity fungsional, respons tekan 2px, dan dukungan Enter/Space.
+ * Saat nonaktif, kartu menampilkan dither dan stempel status ("DIAMBIL", "DILEWATI", "TERKUNCI").
  */
-public class PixelCard extends JComponent {
+public final class PixelCard extends JComponent implements Accessible {
 
     private Icon icon;
     private String judul;
@@ -33,6 +35,7 @@ public class PixelCard extends JComponent {
     private String badge;
     private String stempel;
     private boolean hover;
+    private boolean tekan;
     private boolean terpilih;
     private boolean aktif = true;
     private Runnable aksi;
@@ -43,6 +46,7 @@ public class PixelCard extends JComponent {
         setOpaque(false);
         setFocusable(true);
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        getAccessibleContext().setAccessibleName(judul);
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -53,12 +57,26 @@ public class PixelCard extends JComponent {
             @Override
             public void mouseExited(MouseEvent e) {
                 hover = false;
+                tekan = false;
                 repaint();
             }
 
             @Override
-            public void mouseClicked(MouseEvent e) {
-                klik();
+            public void mousePressed(MouseEvent e) {
+                if (aktif) {
+                    tekan = true;
+                    requestFocusInWindow();
+                    repaint();
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (tekan) {
+                    tekan = false;
+                    repaint();
+                    if (hover) klik();
+                }
             }
         });
         addFocusListener(new FocusAdapter() {
@@ -92,7 +110,11 @@ public class PixelCard extends JComponent {
     public PixelCard aksi(Runnable r) { this.aksi = r; return this; }
     public PixelCard ukuran(int w, int h) { this.ukuranPilihan = new Dimension(w, h); return this; }
 
-    public void setJudul(String j) { this.judul = j; repaint(); }
+    public void setJudul(String j) {
+        this.judul = j;
+        getAccessibleContext().setAccessibleName(j);
+        repaint();
+    }
 
     public void setTerpilih(boolean t) {
         this.terpilih = t;
@@ -112,6 +134,19 @@ public class PixelCard extends JComponent {
     }
 
     @Override
+    public AccessibleContext getAccessibleContext() {
+        if (accessibleContext == null) {
+            accessibleContext = new AccessibleJComponent() {
+                @Override
+                public AccessibleRole getAccessibleRole() {
+                    return AccessibleRole.PUSH_BUTTON;
+                }
+            };
+        }
+        return accessibleContext;
+    }
+
+    @Override
     public Dimension getPreferredSize() {
         return ukuranPilihan;
     }
@@ -122,14 +157,17 @@ public class PixelCard extends JComponent {
         Tema.pixelated(g);
         int w = getWidth() - 4;
         int h = getHeight() - 4;
+        int geser = (aktif && tekan) ? 2 : 0;
         boolean balik = aktif && (hover || isFocusOwner());
         Color latar = !aktif ? Tema.MUDA : balik ? Tema.GELAP : Tema.TERANG;
         Color tinta = !aktif ? Tema.TUA : balik ? Tema.TERANG : Tema.GELAP;
-        Color redup = !aktif ? Tema.TUA : balik ? Tema.MUDA : Tema.TUA;
+        Color redup = !aktif ? Tema.TUA : balik ? Tema.MUDA : Tema.GELAP;
 
-        // bayangan + bingkai
-        g.setColor(Tema.TUA);
-        g.fillRect(4, 4, w, h);
+        if (geser == 0) {
+            g.setColor(Tema.TUA);
+            g.fillRect(4, 4, w, h);
+        }
+        g.translate(geser, geser);
         g.setColor(Tema.GELAP);
         g.fillRect(2, 0, w - 4, h);
         g.fillRect(0, 2, w, h - 4);

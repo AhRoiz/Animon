@@ -15,39 +15,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
-/**
- * Design system GUI ANIMON bertema <b>Retro Game Boy</b>.
- *
- * <ul>
- *   <li>Palet 4 warna hijau klasik DMG-01 ({@link #GELAP} .. {@link #TERANG}).</li>
- *   <li>Font pixel: <i>Press Start 2P</i> untuk judul/tombol dan <i>VT323</i> untuk teks/log.
- *       Keduanya (lisensi OFL) dimuat dari {@code src/animon/assets/fonts}. Bila tidak ada,
- *       otomatis jatuh ke {@code Monospaced} tebal.</li>
- * </ul>
- *
- * Semua panel/komponen GUI wajib mengambil warna &amp; font dari kelas ini agar tampilan konsisten.
- */
+/** Design system GUI ANIMON bertema layar LCD Retro Game Boy (DMG-01). */
 public final class Tema {
 
-    // =================================================================== palet Game Boy (gelap -> terang)
-
-    /** #0f380f - warna paling gelap (teks, garis tepi). */
+    // Empat tingkat hijau DMG-01 menjaga rasio kontras teks aktif >= 5.03:1 terhadap latar terang/muda.
     public static final Color GELAP = new Color(0x0f380f);
-    /** #306230 - hijau tua (bayangan, isi MP). */
     public static final Color TUA = new Color(0x306230);
-    /** #8bac0f - hijau muda (aksen, panel sekunder). */
     public static final Color MUDA = new Color(0x8bac0f);
-    /** #9bbc0f - warna paling terang (latar layar LCD). */
     public static final Color TERANG = new Color(0x9bbc0f);
 
-    /** Palet berurutan dari gelap ke terang (dipakai filter sprite mode GB). */
+    /** Urutan gelap ke terang untuk pemetaan luminansi sprite mode Game Boy. */
     public static final Color[] PALET = {GELAP, TUA, MUDA, TERANG};
-
-    // =================================================================== font
 
     private static Font fontJudul;
     private static Font fontTeks;
     private static boolean fontPixelTersedia;
+    private static boolean animasiAktif = true;
 
     private Tema() {
     }
@@ -59,6 +42,7 @@ public final class Tema {
     }
 
     private static void muatFont() {
+        // PressStart2P mempertegas hierarki tombol 8-bit; VT323 menjaga keterbacaan teks log panjang.
         Font judul = bacaFont("PressStart2P-Regular.ttf");
         Font teks = bacaFont("VT323-Regular.ttf");
         fontPixelTersedia = judul != null;
@@ -67,13 +51,10 @@ public final class Tema {
     }
 
     private static Font bacaFont(String file) {
-        // 1) classpath (bila aset ikut tersalin ke folder out/)
         try (InputStream in = Tema.class.getResourceAsStream("/animon/assets/fonts/" + file)) {
             if (in != null) return daftarkan(Font.createFont(Font.TRUETYPE_FONT, in));
         } catch (IOException | FontFormatException ignored) {
-            // lanjut ke pencarian filesystem
         }
-        // 2) filesystem: src/animon/assets/fonts
         File dir = SpriteLoader.folderAset();
         if (dir != null) {
             File f = new File(new File(dir, "fonts"), file);
@@ -81,7 +62,6 @@ public final class Tema {
                 try (InputStream in = Files.newInputStream(f.toPath())) {
                     return daftarkan(Font.createFont(Font.TRUETYPE_FONT, in));
                 } catch (IOException | FontFormatException ignored) {
-                    // jatuh ke font bawaan
                 }
             }
         }
@@ -110,7 +90,13 @@ public final class Tema {
         return fontPixelTersedia;
     }
 
-    // =================================================================== helper render
+    public static boolean isAnimasiAktif() {
+        return animasiAktif;
+    }
+
+    public static void setAnimasiAktif(boolean aktif) {
+        animasiAktif = aktif;
+    }
 
     /** Rendering tajam ala pixel art (tanpa interpolasi blur). */
     public static void pixelated(Graphics2D g) {
@@ -129,8 +115,6 @@ public final class Tema {
             for (int xx = x + offset; xx < x + w; xx += jarak) g.fillRect(xx, yy, 2, 2);
         }
     }
-
-    // =================================================================== UIManager
 
     private static void pasangUIManager() {
         ColorUIResource gelap = new ColorUIResource(GELAP);

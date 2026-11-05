@@ -17,23 +17,8 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Pemuat sprite hewan secara dinamis dari {@code src/animon/assets/}.
- *
- * <p>Konvensi nama file: {@code [namaHewanCamelCase]_depan.png} (musuh, di atas) dan
- * {@code [namaHewanCamelCase]_belakang.png} (hewan pemain, di bawah). Nama dicocokkan dari
- * {@link Hewan#getNama()} sehingga hewan baru di JSON otomatis mendapat sprite bila file-nya ada.</p>
- *
- * <p>Pencocokan bertingkat agar tahan terhadap variasi nama file:</p>
- * <ol>
- *   <li>camelCase persis, mis. "Gajah Batu" -&gt; {@code gajahBatu_depan.png}</li>
- *   <li>alias (nama file yang disingkat), mis. "Lumba-lumba Pelangi" -&gt; {@code lumbaPelangi}</li>
- *   <li>pencocokan fuzzy (jarak Levenshtein kecil) untuk salah ketik di nama file</li>
- *   <li>file tanpa akhiran, mis. {@code nagaEs.png} sebagai sprite depan</li>
- *   <li>sprite cadangan "?" yang digambar otomatis</li>
- * </ol>
- *
- * <p>Saat diperbesar, gambar memakai {@link Image#SCALE_REPLICATE} (nearest-neighbor) agar
- * tetap tajam &amp; pixelated, tidak blur.</p>
+ * Pemuat sprite hewan dari {@code src/animon/assets/} dengan penskalaan nearest-neighbor tajam.
+ * Menangani pencocokan camelCase, alias nama singkat, toleransi salah ketik Levenshtein, dan cadangan gambar.
  */
 public final class SpriteLoader {
 
@@ -56,8 +41,6 @@ public final class SpriteLoader {
 
     private SpriteLoader() {
     }
-
-    // =================================================================== API publik
 
     /** Sprite depan (dipakai untuk hewan musuh di arena atas &amp; kartu pilihan). */
     public static ImageIcon depan(Hewan h, int ukuran) {
@@ -109,8 +92,6 @@ public final class SpriteLoader {
         return sb.toString();
     }
 
-    // =================================================================== pencarian file
-
     /** Folder {@code src/animon/assets} (dicari relatif terhadap working directory / classpath). */
     public static synchronized File folderAset() {
         if (folderDicari) return folderAset;
@@ -129,7 +110,6 @@ public final class SpriteLoader {
                 File f = new File(url.toURI());
                 if (f.isDirectory()) folderAset = f;
             } catch (URISyntaxException ignored) {
-                // tidak ada folder aset
             }
         }
         return folderAset;
@@ -147,7 +127,6 @@ public final class SpriteLoader {
     }
 
     private static BufferedImage cari(String camel, String akhiran) {
-        // 1) persis  2) alias
         BufferedImage img = baca(camel + akhiran);
         if (img == null && ALIAS.containsKey(camel)) img = baca(ALIAS.get(camel) + akhiran);
         if (img != null) return img;
@@ -160,7 +139,7 @@ public final class SpriteLoader {
         String target = (ALIAS.getOrDefault(camel, camel)).toLowerCase(Locale.ROOT);
         String akhiranKecil = akhiran.toLowerCase(Locale.ROOT);
 
-        // 3) fuzzy untuk file berakhiran sama (menangani salah ketik pada nama file)
+        // Toleransi salah ketik kecil pada nama file aset (mis. huruf ganda).
         File terbaik = null;
         int jarakTerbaik = Integer.MAX_VALUE;
         for (File f : files) {
@@ -177,7 +156,7 @@ public final class SpriteLoader {
         int batas = Math.max(2, target.length() / 5);
         if (terbaik != null && jarakTerbaik <= batas) return bacaFile(terbaik);
 
-        // 4) file tanpa akhiran (mis. nagaEs.png) dipakai sebagai sprite depan
+        // Aset tanpa akhiran arah dipakai sebagai sprite depan.
         if ("_depan".equals(akhiran)) {
             for (File f : files) {
                 String n = f.getName().toLowerCase(Locale.ROOT);
@@ -194,7 +173,6 @@ public final class SpriteLoader {
         try (InputStream in = SpriteLoader.class.getResourceAsStream("/animon/assets/" + file)) {
             if (in != null) return ImageIO.read(in);
         } catch (IOException ignored) {
-            // coba filesystem
         }
         File dir = folderAset();
         if (dir == null) return null;
@@ -226,8 +204,6 @@ public final class SpriteLoader {
         }
         return prev[b.length()];
     }
-
-    // =================================================================== olah gambar
 
     /** Sprite "?" 64x64 sederhana bila file tidak ditemukan. */
     private static BufferedImage spriteCadangan(boolean depan) {

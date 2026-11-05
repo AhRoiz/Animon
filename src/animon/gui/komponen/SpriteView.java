@@ -10,27 +10,19 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 /**
- * {@link JLabel} untuk sprite hewan di arena, lengkap dengan:
- * <ul>
- *   <li>platform/bayangan elips ber-dither di bawah sprite (ala arena Pokemon),</li>
- *   <li>animasi idle naik-turun 2px,</li>
- *   <li>animasi berkedip saat terkena damage ({@link #animasiKena()}),</li>
- *   <li>animasi masuk arena dari samping ({@link #animasiMasuk()}),</li>
- *   <li>animasi tumbang: sprite tenggelam ke bawah ({@link #animasiPingsan()}).</li>
- * </ul>
+ * Penampil sprite arena dengan platform elips ber-dither dan reaksi masuk, terkena serangan, atau tumbang.
+ * Tidak menjalankan gerak idle berulang agar fokus tetap pada aksi giliran aktif.
  */
-public class SpriteView extends JLabel {
+public final class SpriteView extends JLabel {
 
     private final int ukuran;
     private final boolean dariKanan;
 
-    private int bob;
     private int geserX;
     private int geserY;
     private boolean tampil = true;
     private boolean pingsan;
 
-    private final Timer timerIdle;
     private Timer timerEfek;
 
     public SpriteView(int ukuran, boolean dariKanan) {
@@ -38,13 +30,6 @@ public class SpriteView extends JLabel {
         this.dariKanan = dariKanan;
         setHorizontalAlignment(CENTER);
         setOpaque(false);
-        timerIdle = new Timer(520, e -> {
-            if (!pingsan) {
-                bob = bob == 0 ? -3 : 0;
-                repaint();
-            }
-        });
-        timerIdle.start();
     }
 
     public void setSprite(Icon icon, boolean pingsan) {
@@ -59,7 +44,7 @@ public class SpriteView extends JLabel {
 
     /** Sprite berkedip 4x (terkena serangan). */
     public void animasiKena() {
-        if (pingsan) return;
+        if (pingsan || !Tema.isAnimasiAktif()) return;
         mulaiEfek((tick) -> {
             tampil = tick % 2 == 1;
             geserX = tick < 6 ? (tick % 2 == 0 ? 4 : -4) : 0;
@@ -71,8 +56,13 @@ public class SpriteView extends JLabel {
     public void animasiMasuk() {
         pingsan = false;
         geserY = 0;
-        geserX = dariKanan ? ukuran * 2 : -ukuran * 2;
         tampil = true;
+        if (!Tema.isAnimasiAktif()) {
+            geserX = 0;
+            repaint();
+            return;
+        }
+        geserX = dariKanan ? ukuran * 2 : -ukuran * 2;
         mulaiEfek((tick) -> {
             geserX = (int) (geserX * 0.72);
             if (Math.abs(geserX) < 3) {
@@ -86,6 +76,11 @@ public class SpriteView extends JLabel {
     /** Sprite tenggelam (pingsan). */
     public void animasiPingsan() {
         pingsan = true;
+        if (!Tema.isAnimasiAktif()) {
+            geserY = ukuran;
+            repaint();
+            return;
+        }
         mulaiEfek((tick) -> {
             geserY += Math.max(4, ukuran / 16);
             if (geserY >= ukuran) {
@@ -147,9 +142,9 @@ public class SpriteView extends JLabel {
         Icon ic = getIcon();
         if (ic != null && tampil) {
             int ix = (w - ic.getIconWidth()) / 2 + geserX;
-            int iy = py + ph / 2 - ic.getIconHeight() + bob + geserY + 6;
+            int iy = py + ph / 2 - ic.getIconHeight() + geserY + 6;
             Graphics2D gs = (Graphics2D) g.create();
-            gs.clipRect(0, 0, w, py + ph / 2 + 4); // sprite tenggelam di balik platform saat pingsan
+            gs.clipRect(0, 0, w, py + ph / 2 + 4);
             ic.paintIcon(this, gs, ix, iy);
             gs.dispose();
         }
@@ -159,13 +154,6 @@ public class SpriteView extends JLabel {
     @Override
     public void removeNotify() {
         super.removeNotify();
-        timerIdle.stop();
         if (timerEfek != null) timerEfek.stop();
-    }
-
-    @Override
-    public void addNotify() {
-        super.addNotify();
-        timerIdle.start();
     }
 }

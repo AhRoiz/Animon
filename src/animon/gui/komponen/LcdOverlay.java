@@ -10,14 +10,10 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 /**
- * Glass pane untuk efek layar LCD Game Boy:
- * <ul>
- *   <li>grid dot-matrix tipis di seluruh layar (kesan piksel LCD),</li>
- *   <li>animasi transisi "tirai garis" saat berpindah layar (ala transisi masuk battle).</li>
- * </ul>
- * Tidak memiliki mouse listener sehingga klik tetap diteruskan ke komponen di bawahnya.
+ * Glass pane tanpa listener mouse untuk garis piksel LCD dan tirai transisi antar-layar.
+ * Klik mouse diteruskan penuh ke komponen aktif di bawahnya.
  */
-public class LcdOverlay extends JComponent {
+public final class LcdOverlay extends JComponent {
 
     private static final Color GRID = new Color(15, 56, 15, 16);
     private static final int TINGGI_PITA = 28;
@@ -44,6 +40,12 @@ public class LcdOverlay extends JComponent {
         if (timer != null && timer.isRunning()) {
             timer.stop();
             progres = 0;
+        }
+        if (!Tema.isAnimasiAktif()) {
+            progres = 0;
+            tengah.run();
+            repaint();
+            return;
         }
         final boolean[] menutup = {true};
         timer = new Timer(15, null);

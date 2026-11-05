@@ -12,7 +12,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 /** Scrollbar pixel tanpa tombol panah: track terang ber-dither, thumb hijau tua. */
-public class PixelScrollBarUI extends BasicScrollBarUI {
+public final class PixelScrollBarUI extends BasicScrollBarUI {
 
     @Override
     protected JButton createDecreaseButton(int orientation) {

@@ -13,7 +13,7 @@ import java.awt.Insets;
  * Bingkai kotak dialog ala Game Boy: garis luar tebal dengan sudut "terpotong" (notched)
  * dan garis dalam tipis, seperti kotak teks pada game RPG 8-bit.
  */
-public class PixelBorder extends AbstractBorder {
+public final class PixelBorder extends AbstractBorder {
 
     private final Color luar;
     private final Color dalam;

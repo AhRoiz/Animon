@@ -19,9 +19,8 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 
 /**
- * Dialog modal bergaya Game Boy (pengganti JOptionPane yang tampilannya tidak menyatu dengan tema).
- * Karena modal, method-method di sini memblokir sampai pemain memilih — aman dipanggil dari
- * callback sinkron seperti {@code PenanganInventoryPenuh}.
+ * Dialog modal bergaya Game Boy yang dapat ditutup dengan Escape.
+ * Pemanggilan memblokir hingga pemain memilih, aman untuk callback sinkron seperti {@code PenanganInventoryPenuh}.
  */
 public final class DialogPixel {
 

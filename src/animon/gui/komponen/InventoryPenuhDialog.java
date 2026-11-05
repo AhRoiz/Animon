@@ -16,9 +16,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 
 /**
- * Implementasi GUI dari kontrak {@link PenanganInventoryPenuh}: dipanggil
- * {@link Trainer#tambahItem(Item, PenanganInventoryPenuh)} saat inventory sudah 6/6.
- * Pemain dipaksa memilih: jual salah satu item, buang salah satu item, atau tolak item baru.
+ * Implementasi GUI {@link PenanganInventoryPenuh} saat tas mencapai kapasitas 6/6.
+ * Meminta pemain memilih jual (50% harga), buang slot lama, atau tolak item baru.
  */
 public final class InventoryPenuhDialog implements PenanganInventoryPenuh {
 

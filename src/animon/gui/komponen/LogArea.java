@@ -12,7 +12,7 @@ import java.util.List;
  * {@link JTextArea} untuk dialog/log pertempuran dengan efek mesin ketik (teks baru muncul
  * huruf demi huruf, seperti kotak dialog game Game Boy). Klik area log untuk melewati animasi.
  */
-public class LogArea extends JTextArea {
+public final class LogArea extends JTextArea {
 
     private String target = "";
     private final Timer ketik;
@@ -24,9 +24,21 @@ public class LogArea extends JTextArea {
         setFont(Tema.teks(22f));
         setForeground(Tema.GELAP);
         setBackground(Tema.TERANG);
-        setCaretColor(Tema.TERANG);
-        setFocusable(false);
+        setCaretColor(Tema.GELAP);
+        setFocusable(true);
         setMargin(new java.awt.Insets(4, 8, 4, 8));
+        getAccessibleContext().setAccessibleName("Log Pertempuran");
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                setBorder(javax.swing.BorderFactory.createLineBorder(Tema.GELAP, 2));
+            }
+
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                setBorder(null);
+            }
+        });
 
         ketik = new Timer(12, e -> langkah());
         addMouseListener(new MouseAdapter() {
@@ -47,6 +59,12 @@ public class LogArea extends JTextArea {
         String baru = sb.toString();
         String lama = getText();
         target = baru;
+        if (!Tema.isAnimasiAktif()) {
+            ketik.stop();
+            setText(baru);
+            setCaretPosition(getDocument().getLength());
+            return;
+        }
         if (!baru.startsWith(lama)) {
             // log diganti total (giliran baru) -> ketik ulang dari awal agar pemain membaca aksi lawan
             setText("");
